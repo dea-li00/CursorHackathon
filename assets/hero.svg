@@ -1,0 +1,62 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="heroGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1f6feb;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#6aa9ff;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="cardGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.1);stop-opacity:1" />
+      <stop offset="100%" style="stop-color:rgba(255,255,255,0.05);stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#heroGradient)"/>
+  
+  <!-- Invoice Upload Area -->
+  <rect x="50" y="50" width="300" height="200" rx="10" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <svg x="175" y="120" width="50" height="50" viewBox="0 0 24 24" fill="white">
+    <path d="M14 2H6A2 2 0 0 0 4 4v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6zm0 6V4l6 6H14z"/>
+  </svg>
+  <text x="150" y="180" fill="white" font-family="Arial, sans-serif" font-size="14">Upload Invoice</text>
+  
+  <!-- AI Processing -->
+  <rect x="400" y="50" width="300" height="200" rx="10" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  <circle cx="550" cy="150" r="30" fill="#6aa9ff"/>
+  <svg x="535" y="135" width="30" height="30" viewBox="0 0 24 24" fill="white">
+    <path d="M12 2L13.09 8.26L20 9L13.09 15.74L12 22L10.91 15.74L4 9L10.91 8.26L12 2Z"/>
+  </svg>
+  <text x="470" y="180" fill="white" font-family="Arial, sans-serif" font-size="14">AI Processing</text>
+  
+  <!-- Excel Output -->
+  <rect x="50" y="300" width="700" height="250" rx="10" fill="url(#cardGradient)" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+  
+  <!-- Excel Header -->
+  <rect x="70" y="320" width="660" height="30" fill="#1f6feb"/>
+  <text x="80" y="340" fill="white" font-family="Arial, sans-serif" font-size="14" font-weight="bold">AP Bills - Excel Output</text>
+  
+  <!-- Excel Rows -->
+  <rect x="70" y="350" width="660" height="20" fill="rgba(255,255,255,0.1)"/>
+  <text x="80" y="365" fill="white" font-family="Arial, sans-serif" font-size="12">Vendor | Date | Amount | Category</text>
+  
+  <rect x="70" y="370" width="660" height="20" fill="rgba(255,255,255,0.05)"/>
+  <text x="80" y="385" fill="white" font-family="Arial, sans-serif" font-size="12">Acme Corp | 2024-01-15 | $1,234.56 | Office Supplies</text>
+  
+  <rect x="70" y="390" width="660" height="20" fill="rgba(255,255,255,0.05)"/>
+  <text x="80" y="405" fill="white" font-family="Arial, sans-serif" font-size="12">TechSolutions | 2024-01-16 | $890.12 | IT Services</text>
+  
+  <!-- Download Button -->
+  <rect x="680" y="420" width="40" height="20" rx="4" fill="#1f6feb"/>
+  <svg x="690" y="425" width="20" height="10" viewBox="0 0 24 24" fill="white">
+    <path d="M19 13H13V7H5V19H19V13ZM11 15H13V17H11V15ZM17 17H15V15H17V17Z"/>
+  </svg>
+  <text x="650" y="435" fill="#1f6feb" font-family="Arial, sans-serif" font-size="10">Download</text>
+  
+  <!-- Arrows -->
+  <path d="M350 150L400 150L375 175L350 150Z" fill="#6aa9ff"/>
+  <path d="M350 220L400 220L375 245L350 220Z" fill="#6aa9ff"/>
+  
+  <!-- Title -->
+  <text x="400" y="50" fill="white" font-family="Arial, sans-serif" font-size="28" font-weight="bold">InvoiceIQ</text>
+  <text x="400" y="80" fill="rgba(255,255,255,0.8)" font-family="Arial, sans-serif" font-size="16">AI Invoice to Excel AP Bills</text>
+</svg>
