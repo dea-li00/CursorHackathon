@@ -212,14 +212,15 @@
                 <h2 class="section-title">See it in Action</h2>
                 <div class="demo-content">
                     <div class="demo-video">
-                        <iframe 
-                            src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
-                            title="InvoiceIQ Demo Video" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            allowfullscreen
-                            loading="lazy">
-                        </iframe>
+                        <video 
+                            controls 
+                            poster="assets/demo-poster.jpg"
+                            preload="metadata"
+                            style="width: 100%; height: auto; border-radius: 0.5rem; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);">
+                            <source src="assets/invoiceiq-demo.mov" type="video/mp4">
+                            <source src="assets/invoiceiq-demo.webm" type="video/webm">
+                            <p>Your browser doesn't support HTML5 video. <a href="assets/invoiceiq-demo.mp4">Download the demo video</a> instead.</p>
+                        </video>
                     </div>
                     <div class="demo-actions">
                         <a href="assets/sample-AP_Bills.xlsx" class="btn btn-primary" download>Download Sample Excel</a>
