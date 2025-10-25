@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import type { APBill, APBillLine } from '../types';
 
 interface BillDetailProps {
@@ -11,6 +11,17 @@ const BillDetail: React.FC<BillDetailProps> = ({ bill, onUpdate, onClose }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<APBill>>(bill);
 
+  const extractionConfidence = useMemo(() => {
+    const scores = Object.values(bill.extraction_meta.confidence_scores ?? {});
+    if (!scores.length) {
+      return 0;
+    }
+
+    return Math.round((scores.reduce((acc, value) => acc + value, 0) / scores.length) * 100);
+  }, [bill]);
+
+  const fieldClasses = 'input';
+  const tableFieldClasses = 'input input--dense';
 
   const handleSave = () => {
     onUpdate(formData);
@@ -22,11 +33,11 @@ const BillDetail: React.FC<BillDetailProps> = ({ bill, onUpdate, onClose }) => {
     setIsEditing(false);
   };
 
-  const updateField = (field: keyof APBill, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const updateField = (field: keyof APBill, value: unknown) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const updateLineItem = (index: number, field: keyof APBillLine, value: any) => {
+  const updateLineItem = (index: number, field: keyof APBillLine, value: unknown) => {
     const newLines = [...(formData.lines || bill.lines)];
     newLines[index] = { ...newLines[index], [field]: value };
     updateField('lines', newLines);
@@ -54,269 +65,223 @@ const BillDetail: React.FC<BillDetailProps> = ({ bill, onUpdate, onClose }) => {
   const currentData = isEditing ? formData : bill;
 
   return (
-    <div className="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50">
-      <div className="relative top-20 mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-medium text-gray-900">Invoice Details</h3>
-          <div className="flex space-x-2">
+    <div className="bill-detail">
+      <div className="bill-detail__backdrop" onClick={onClose} />
+      <aside className="bill-detail__panel">
+        <header className="bill-detail__header">
+          <div>
+            <span className="bill-detail__subtitle">Invoice #{bill.invoice_number}</span>
+            <h2>{bill.vendor_name}</h2>
+            <div className="bill-detail__tags">
+              <span className="chip chip--muted">{bill.workflow.status.replace('_', ' ')}</span>
+              <span className="chip chip--muted">{extractionConfidence}% confidence</span>
+              <span className="chip chip--muted">Created {new Date(bill.created_at).toLocaleDateString()}</span>
+            </div>
+          </div>
+          <div className="bill-detail__actions">
             {!isEditing ? (
               <>
-                <button
-                  onClick={() => setIsEditing(true)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
+                <button type="button" onClick={() => setIsEditing(true)} className="btn btn--primary">
                   Edit
                 </button>
-                <button
-                  onClick={onClose}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-                >
+                <button type="button" onClick={onClose} className="btn btn--ghost">
                   Close
                 </button>
               </>
             ) : (
               <>
-                <button
-                  onClick={handleSave}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-                >
+                <button type="button" onClick={handleSave} className="btn btn--success">
                   Save
                 </button>
-                <button
-                  onClick={handleCancel}
-                  className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-                >
+                <button type="button" onClick={handleCancel} className="btn btn--ghost">
                   Cancel
                 </button>
               </>
             )}
           </div>
-        </div>
+        </header>
 
-        <div className="space-y-6">
-          {/* Header Information */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Vendor Name</label>
-              <input
-                type="text"
-                value={currentData.vendor_name || ''}
-                onChange={(e) => updateField('vendor_name', e.target.value)}
-                disabled={!isEditing}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  !isEditing ? 'bg-gray-50' : ''
-                }`}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Invoice Number</label>
-              <input
-                type="text"
-                value={currentData.invoice_number || ''}
-                onChange={(e) => updateField('invoice_number', e.target.value)}
-                disabled={!isEditing}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  !isEditing ? 'bg-gray-50' : ''
-                }`}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Invoice Date</label>
-              <input
-                type="date"
-                value={currentData.invoice_date || ''}
-                onChange={(e) => updateField('invoice_date', e.target.value)}
-                disabled={!isEditing}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  !isEditing ? 'bg-gray-50' : ''
-                }`}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Due Date</label>
-              <input
-                type="date"
-                value={currentData.due_date || ''}
-                onChange={(e) => updateField('due_date', e.target.value)}
-                disabled={!isEditing}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  !isEditing ? 'bg-gray-50' : ''
-                }`}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Currency</label>
-              <select
-                value={currentData.currency || 'USD'}
-                onChange={(e) => updateField('currency', e.target.value)}
-                disabled={!isEditing}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  !isEditing ? 'bg-gray-50' : ''
-                }`}
-              >
-                <option value="USD">USD</option>
-                <option value="EUR">EUR</option>
-                <option value="GBP">GBP</option>
-                <option value="JPY">JPY</option>
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">PO Number</label>
-              <input
-                type="text"
-                value={currentData.po_number || ''}
-                onChange={(e) => updateField('po_number', e.target.value)}
-                disabled={!isEditing}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  !isEditing ? 'bg-gray-50' : ''
-                }`}
-              />
-            </div>
-          </div>
-
-          {/* Financial Information */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Subtotal</label>
-              <input
-                type="number"
-                step="0.01"
-                value={currentData.subtotal || 0}
-                onChange={(e) => updateField('subtotal', parseFloat(e.target.value) || 0)}
-                disabled={!isEditing}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  !isEditing ? 'bg-gray-50' : ''
-                }`}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Tax</label>
-              <input
-                type="number"
-                step="0.01"
-                value={currentData.tax || 0}
-                onChange={(e) => updateField('tax', parseFloat(e.target.value) || 0)}
-                disabled={!isEditing}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  !isEditing ? 'bg-gray-50' : ''
-                }`}
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Total</label>
-              <input
-                type="number"
-                step="0.01"
-                value={currentData.total || 0}
-                onChange={(e) => updateField('total', parseFloat(e.target.value) || 0)}
-                disabled={!isEditing}
-                className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                  !isEditing ? 'bg-gray-50' : ''
-                }`}
-              />
-            </div>
-          </div>
-
-          {/* Line Items */}
-          <div>
-            <div className="flex justify-between items-center mb-2">
-              <h4 className="text-md font-medium text-gray-900">Line Items</h4>
-              {isEditing && (
-                <button
-                  onClick={addLineItem}
-                  className="px-3 py-1 text-sm bg-blue-600 text-white rounded hover:bg-blue-700"
+        <div className="bill-detail__content">
+          <section className="bill-detail__section">
+            <h3>Vendor &amp; Invoice</h3>
+            <div className="bill-detail__grid">
+              <div className="form-field">
+                <label>Vendor name</label>
+                <input
+                  type="text"
+                  value={currentData.vendor_name || ''}
+                  onChange={(e) => updateField('vendor_name', e.target.value)}
+                  disabled={!isEditing}
+                  className={fieldClasses}
+                />
+              </div>
+              <div className="form-field">
+                <label>Invoice number</label>
+                <input
+                  type="text"
+                  value={currentData.invoice_number || ''}
+                  onChange={(e) => updateField('invoice_number', e.target.value)}
+                  disabled={!isEditing}
+                  className={fieldClasses}
+                />
+              </div>
+              <div className="form-field">
+                <label>Invoice date</label>
+                <input
+                  type="date"
+                  value={currentData.invoice_date || ''}
+                  onChange={(e) => updateField('invoice_date', e.target.value)}
+                  disabled={!isEditing}
+                  className={fieldClasses}
+                />
+              </div>
+              <div className="form-field">
+                <label>Due date</label>
+                <input
+                  type="date"
+                  value={currentData.due_date || ''}
+                  onChange={(e) => updateField('due_date', e.target.value)}
+                  disabled={!isEditing}
+                  className={fieldClasses}
+                />
+              </div>
+              <div className="form-field">
+                <label>Currency</label>
+                <select
+                  value={currentData.currency || 'USD'}
+                  onChange={(e) => updateField('currency', e.target.value)}
+                  disabled={!isEditing}
+                  className={fieldClasses}
                 >
-                  Add Item
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="GBP">GBP</option>
+                  <option value="JPY">JPY</option>
+                </select>
+              </div>
+              <div className="form-field">
+                <label>PO number</label>
+                <input
+                  type="text"
+                  value={currentData.po_number || ''}
+                  onChange={(e) => updateField('po_number', e.target.value)}
+                  disabled={!isEditing}
+                  className={fieldClasses}
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="bill-detail__section">
+            <h3>Financials</h3>
+            <div className="bill-detail__grid bill-detail__grid--three">
+              <div className="form-field">
+                <label>Subtotal</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={currentData.subtotal || 0}
+                  onChange={(e) => updateField('subtotal', parseFloat(e.target.value) || 0)}
+                  disabled={!isEditing}
+                  className={fieldClasses}
+                />
+              </div>
+              <div className="form-field">
+                <label>Tax</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={currentData.tax || 0}
+                  onChange={(e) => updateField('tax', parseFloat(e.target.value) || 0)}
+                  disabled={!isEditing}
+                  className={fieldClasses}
+                />
+              </div>
+              <div className="form-field">
+                <label>Total</label>
+                <input
+                  type="number"
+                  step="0.01"
+                  value={currentData.total || 0}
+                  onChange={(e) => updateField('total', parseFloat(e.target.value) || 0)}
+                  disabled={!isEditing}
+                  className={fieldClasses}
+                />
+              </div>
+            </div>
+          </section>
+
+          <section className="bill-detail__section">
+            <div className="bill-detail__section-header">
+              <h3>Line items</h3>
+              {isEditing && (
+                <button type="button" onClick={addLineItem} className="btn btn--outline">
+                  Add item
                 </button>
               )}
             </div>
-
-            <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-200">
-                <thead className="bg-gray-50">
+            <div className="table-scroll">
+              <table>
+                <thead>
                   <tr>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Description
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Qty
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Unit Price
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Amount
-                    </th>
-                    {isEditing && (
-                      <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                        Actions
-                      </th>
-                    )}
+                    <th>Description</th>
+                    <th>Qty</th>
+                    <th>Unit price</th>
+                    <th>Amount</th>
+                    {isEditing && <th>Actions</th>}
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-200">
+                <tbody>
                   {(currentData.lines || []).map((line, index) => (
                     <tr key={index}>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td>
                         <input
                           type="text"
                           value={line.description}
                           onChange={(e) => updateLineItem(index, 'description', e.target.value)}
                           disabled={!isEditing}
-                          className={`w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                            !isEditing ? 'bg-gray-50' : ''
-                          }`}
+                          className={tableFieldClasses}
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td>
                         <input
                           type="number"
                           step="0.01"
-                          value={line.quantity || ''}
-                          onChange={(e) => updateLineItem(index, 'quantity', parseFloat(e.target.value) || undefined)}
+                          value={line.quantity ?? ''}
+                          onChange={(e) =>
+                            updateLineItem(index, 'quantity', parseFloat(e.target.value) || undefined)
+                          }
                           disabled={!isEditing}
-                          className={`w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                            !isEditing ? 'bg-gray-50' : ''
-                          }`}
+                          className={tableFieldClasses}
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td>
                         <input
                           type="number"
                           step="0.01"
-                          value={line.unit_price || ''}
-                          onChange={(e) => updateLineItem(index, 'unit_price', parseFloat(e.target.value) || undefined)}
+                          value={line.unit_price ?? ''}
+                          onChange={(e) =>
+                            updateLineItem(index, 'unit_price', parseFloat(e.target.value) || undefined)
+                          }
                           disabled={!isEditing}
-                          className={`w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                            !isEditing ? 'bg-gray-50' : ''
-                          }`}
+                          className={tableFieldClasses}
                         />
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
+                      <td>
                         <input
                           type="number"
                           step="0.01"
                           value={line.amount}
-                          onChange={(e) => updateLineItem(index, 'amount', parseFloat(e.target.value) || 0)}
+                          onChange={(e) =>
+                            updateLineItem(index, 'amount', parseFloat(e.target.value) || 0)
+                          }
                           disabled={!isEditing}
-                          className={`w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
-                            !isEditing ? 'bg-gray-50' : ''
-                          }`}
+                          className={tableFieldClasses}
                         />
                       </td>
                       {isEditing && (
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <button
-                            onClick={() => removeLineItem(index)}
-                            className="text-red-600 hover:text-red-900"
-                          >
+                        <td>
+                          <button type="button" onClick={() => removeLineItem(index)} className="btn btn--text">
                             Remove
                           </button>
                         </td>
@@ -326,48 +291,50 @@ const BillDetail: React.FC<BillDetailProps> = ({ bill, onUpdate, onClose }) => {
                 </tbody>
               </table>
             </div>
-          </div>
+          </section>
 
-          {/* Validation Messages */}
-          {bill.validation.errors.length > 0 && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-4">
-              <h4 className="text-sm font-medium text-red-800 mb-2">Errors</h4>
-              <ul className="text-sm text-red-700 list-disc list-inside">
-                {bill.validation.errors.map((error, index) => (
-                  <li key={index}>{error}</li>
-                ))}
-              </ul>
-            </div>
+          {(bill.validation.errors.length > 0 || bill.validation.warnings.length > 0) && (
+            <section className="bill-detail__section bill-detail__section--grid">
+              {bill.validation.errors.length > 0 && (
+                <div className="alert alert--error">
+                  <h4>Validation errors</h4>
+                  <ul>
+                    {bill.validation.errors.map((error, index) => (
+                      <li key={index}>{error}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {bill.validation.warnings.length > 0 && (
+                <div className="alert alert--warning">
+                  <h4>Warnings</h4>
+                  <ul>
+                    {bill.validation.warnings.map((warning, index) => (
+                      <li key={index}>{warning}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </section>
           )}
 
-          {bill.validation.warnings.length > 0 && (
-            <div className="bg-yellow-50 border border-yellow-200 rounded-md p-4">
-              <h4 className="text-sm font-medium text-yellow-800 mb-2">Warnings</h4>
-              <ul className="text-sm text-yellow-700 list-disc list-inside">
-                {bill.validation.warnings.map((warning, index) => (
-                  <li key={index}>{warning}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {/* Extraction Metadata */}
-          <div className="bg-gray-50 rounded-md p-4">
-            <h4 className="text-sm font-medium text-gray-900 mb-2">Extraction Details</h4>
-            <div className="grid grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium">Engine:</span> {bill.extraction_meta.engine}
+          <section className="bill-detail__section">
+            <h3>Extraction insights</h3>
+            <div className="insights-grid">
+              <div className="insight">
+                <p>Engine</p>
+                <strong>{bill.extraction_meta.engine}</strong>
+                <span>v{bill.extraction_meta.version}</span>
               </div>
-              <div>
-                <span className="font-medium">Confidence:</span> {Math.round(
-                  Object.values(bill.extraction_meta.confidence_scores).reduce((a, b) => a + b, 0) / 
-                  Object.keys(bill.extraction_meta.confidence_scores).length * 100
-                )}%
+              <div className="insight">
+                <p>Processing time</p>
+                <strong>{bill.extraction_meta.processing_time}s</strong>
+                <span>{bill.extraction_meta.pages_processed} page(s) processed</span>
               </div>
             </div>
-          </div>
+          </section>
         </div>
-      </div>
+      </aside>
     </div>
   );
 };

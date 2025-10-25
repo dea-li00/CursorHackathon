@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { QueryClient, QueryClientProvider, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import FileUpload from './components/FileUpload';
 import BillList from './components/BillList';
 import BillDetail from './components/BillDetail';
 import type { BillSummary, APBill } from './types';
 import { uploadFiles, extractInvoices, getBills, getBill, updateBill, approveBill, exportExcel, downloadExport, healthCheck } from './api';
+import './App.css';
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,66 @@ function AppContent() {
     queryKey: ['bills', statusFilter, searchTerm],
     queryFn: () => getBills(statusFilter || undefined, searchTerm || undefined)
   });
+
+  const healthEngines = health?.engines ?? {};
+
+  useEffect(() => {
+    // prune selections for invoices that are no longer in view
+    setSelectedBills((current) =>
+      current.filter((id) => bills.some((bill) => bill.id === id))
+    );
+  }, [bills]);
+
+  const dashboardStats = useMemo(() => {
+    if (!bills.length) {
+      return {
+        totalInvoices: 0,
+        totalValue: 0,
+        pendingReviewValue: 0,
+        exportedCount: 0,
+        averageConfidence: 0,
+        newestInvoiceCreatedAt: undefined as string | undefined
+      };
+    }
+
+    const totals = bills.reduce(
+      (acc, bill) => {
+        acc.totalInvoices += 1;
+        acc.totalValue += bill.total || 0;
+        if (bill.status === 'needs_review') {
+          acc.pendingReviewValue += bill.total || 0;
+        }
+        if (bill.status === 'exported') {
+          acc.exportedCount += 1;
+        }
+        acc.averageConfidence += bill.confidence;
+        const createdAt = new Date(bill.created_at).getTime();
+        if (!acc.newestInvoiceCreatedAt || createdAt > acc.newestInvoiceCreatedAt) {
+          acc.newestInvoiceCreatedAt = createdAt;
+        }
+        return acc;
+      },
+      {
+        totalInvoices: 0,
+        totalValue: 0,
+        pendingReviewValue: 0,
+        exportedCount: 0,
+        averageConfidence: 0,
+        newestInvoiceCreatedAt: undefined as number | undefined
+      }
+    );
+
+    return {
+      totalInvoices: totals.totalInvoices,
+      totalValue: totals.totalValue,
+      pendingReviewValue: totals.pendingReviewValue,
+      exportedCount: totals.exportedCount,
+      averageConfidence: Math.round((totals.averageConfidence / totals.totalInvoices) * 100),
+      newestInvoiceCreatedAt: totals.newestInvoiceCreatedAt
+        ? new Date(totals.newestInvoiceCreatedAt).toISOString()
+        : undefined
+    };
+  }, [bills]);
 
   // Selected bill query
   const { data: billDetail } = useQuery({
@@ -116,114 +177,166 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="px-4 py-6 sm:px-0">
-          <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">InvoiceIQ</h1>
-              <p className="mt-1 text-sm text-gray-600">
-                Upload invoices and extract data automatically
-              </p>
+    <div className="dashboard">
+      <header className="dashboard__hero">
+        <div className="dashboard__hero-overlay" />
+        <div className="dashboard__hero-inner">
+          <div className="dashboard__hero-top">
+            <div className="dashboard__brand">
+              <div className="dashboard__brand-badge">IQ</div>
+              <div>
+                <h1>InvoiceIQ Command Center</h1>
+                <p>
+                  Monitor extraction health, review invoices, and keep finance operations in flow with a unified workspace.
+                </p>
+              </div>
             </div>
-            
-            {/* Health Status */}
-            <div className="flex items-center space-x-2">
-              <div className={`w-3 h-3 rounded-full ${health?.status === 'healthy' ? 'bg-green-500' : 'bg-red-500'}`}></div>
-              <span className="text-sm text-gray-600">
-                {health?.engines?.azure_di ? 'Azure DI' : ''}
-                {health?.engines?.openai ? ' OpenAI' : ''}
-                {health?.engines?.tesseract ? ' OCR' : ''}
+
+            <div className="dashboard__health card">
+              <p className="card__label">System health</p>
+              <div className="dashboard__health-status">
+                <span className={`status-dot ${health?.status === 'healthy' ? 'status-dot--ok' : 'status-dot--warn'}`} />
+                <span>{health?.status === 'healthy' ? 'All services operational' : 'Attention required'}</span>
+              </div>
+              <div className="dashboard__health-engine">
+                {['azure_di', 'openai', 'tesseract'].map((engine) => (
+                  <span
+                    key={engine}
+                    className={`engine-pill ${healthEngines?.[engine] ? 'engine-pill--active' : ''}`}
+                  >
+                    {engine.replace('_', ' ').toUpperCase()}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="dashboard__stats">
+            <div className="stat-card card">
+              <p className="card__label">Invoices</p>
+              <h2>{dashboardStats.totalInvoices}</h2>
+              <span>
+                {dashboardStats.newestInvoiceCreatedAt
+                  ? `Latest upload ${new Date(dashboardStats.newestInvoiceCreatedAt).toLocaleDateString()}`
+                  : 'Awaiting your first upload'}
               </span>
             </div>
+            <div className="stat-card card">
+              <p className="card__label">Total value</p>
+              <h2>{dashboardStats.totalValue.toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</h2>
+              <span>Aggregated across the active dataset</span>
+            </div>
+            <div className="stat-card card">
+              <p className="card__label">Needs review</p>
+              <h2>{dashboardStats.pendingReviewValue.toLocaleString(undefined, { style: 'currency', currency: 'USD' })}</h2>
+              <span>Value awaiting action before approval</span>
+            </div>
+            <div className="stat-card card">
+              <p className="card__label">Confidence</p>
+              <h2>{dashboardStats.averageConfidence}%</h2>
+              <span>{dashboardStats.exportedCount} invoices exported this cycle</span>
+            </div>
           </div>
         </div>
+      </header>
 
-        {/* Upload Section */}
-        <div className="px-4 py-6 sm:px-0">
-          <div className="space-y-4">
-            <FileUpload
-              onFilesSelected={handleFilesSelected}
-              isUploading={isUploading}
-            />
-            
-            {selectedFiles.length > 0 && (
-              <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-600">
-                  {selectedFiles.length} file(s) selected
+      <main className="dashboard__main">
+        <div className="dashboard__layout">
+          <aside className="dashboard__sidebar">
+            <section className="card upload-card">
+              <div className="card__header">
+                <div>
+                  <h3>Upload Center</h3>
+                  <p>Drop invoices or click to select multiple files. We will process them automatically.</p>
                 </div>
-                <button
-                  onClick={handleUpload}
-                  disabled={isUploading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-                >
-                  {isUploading ? 'Processing...' : 'Extract Data'}
-                </button>
+                <span className="chip chip--accent">AI Extraction</span>
               </div>
-            )}
-          </div>
-        </div>
+              <div className="upload-card__dropzone">
+                <FileUpload onFilesSelected={handleFilesSelected} isUploading={isUploading} />
+              </div>
+              {selectedFiles.length > 0 && (
+                <div className="upload-card__footer">
+                  <span>{selectedFiles.length} file(s) staged</span>
+                  <button
+                    onClick={handleUpload}
+                    disabled={isUploading}
+                    className="btn btn--primary"
+                  >
+                    {isUploading ? 'Processing…' : 'Extract data'}
+                  </button>
+                </div>
+              )}
+            </section>
 
-        {/* Filters */}
-        <div className="px-4 py-6 sm:px-0">
-          <div className="flex space-x-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Status</label>
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              >
-                <option value="">All</option>
-                <option value="new">New</option>
-                <option value="needs_review">Needs Review</option>
-                <option value="approved">Approved</option>
-                <option value="exported">Exported</option>
-              </select>
-            </div>
-            
-            <div className="flex-1">
-              <label className="block text-sm font-medium text-gray-700">Search</label>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search by vendor or invoice number..."
-                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+            <section className="card filters-card">
+              <div className="card__header">
+                <div>
+                  <h3>Filters</h3>
+                  <p>Drill into specific statuses or vendors.</p>
+                </div>
+              </div>
+              <div className="filters-card__control">
+                <label htmlFor="filter-status">Status</label>
+                <div className="input-shell">
+                  <select
+                    id="filter-status"
+                    value={statusFilter}
+                    onChange={(e) => setStatusFilter(e.target.value)}
+                  >
+                    <option value="">All</option>
+                    <option value="new">New</option>
+                    <option value="needs_review">Needs Review</option>
+                    <option value="approved">Approved</option>
+                    <option value="exported">Exported</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="filters-card__control">
+                <label htmlFor="filter-search">Search</label>
+                <div className="input-shell input-shell--icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path d="m21 21-4.35-4.35" />
+                    <circle cx="11" cy="11" r="7" />
+                  </svg>
+                  <input
+                    id="filter-search"
+                    type="text"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    placeholder="Vendor, invoice #, amount…"
+                  />
+                </div>
+              </div>
+            </section>
+          </aside>
+
+          <section className="dashboard__content">
+            {isLoading ? (
+              <div className="loading-state">
+                <div className="loading-spinner" />
+                <p>Loading invoices...</p>
+              </div>
+            ) : (
+              <BillList
+                bills={bills}
+                onBillSelect={handleBillSelect}
+                onApprove={handleApprove}
+                onExport={handleExport}
+                selectedBills={selectedBills}
+                onSelectionChange={setSelectedBills}
               />
-            </div>
-          </div>
+            )}
+          </section>
         </div>
+      </main>
 
-        {/* Bills List */}
-        <div className="px-4 py-6 sm:px-0">
-          {isLoading ? (
-            <div className="text-center py-8">
-              <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <p className="mt-2 text-gray-600">Loading invoices...</p>
-            </div>
-          ) : (
-            <BillList
-              bills={bills}
-              onBillSelect={handleBillSelect}
-              onApprove={handleApprove}
-              onExport={handleExport}
-              selectedBills={selectedBills}
-              onSelectionChange={setSelectedBills}
-            />
-          )}
-        </div>
-
-        {/* Bill Detail Modal */}
-        {selectedBill && billDetail && (
-          <BillDetail
-            bill={billDetail}
-            onUpdate={handleBillUpdate}
-            onClose={handleCloseDetail}
-          />
-        )}
-      </div>
+      {selectedBill && billDetail && (
+        <BillDetail bill={billDetail} onUpdate={handleBillUpdate} onClose={handleCloseDetail} />
+      )}
     </div>
   );
 }
