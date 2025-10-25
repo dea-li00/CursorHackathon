@@ -34,21 +34,26 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected, isUploading })
       <input {...getInputProps()} />
       
       <div className="space-y-4">
-        <div className="mx-auto w-12 h-12 text-gray-400">
-          <svg
-            className="w-full h-full"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-            />
-          </svg>
-        </div>
+      <div className="mx-auto text-gray-400">
+        <svg
+          width="25"              // hard size (beats most CSS)
+          height="25"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          className="inline-block align-middle shrink-0" // prevents flex growth/line-height weirdness
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}     // thinner at small size
+            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+          />
+        </svg>
+      </div>
+
+
         
         <div>
           <p className="text-lg font-medium text-gray-900">

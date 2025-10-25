@@ -8,8 +8,8 @@ import cv2
 import numpy as np
 from pdf2image import convert_from_path
 from PIL import Image
-from ..models import APBill, APBillLine, ExtractionMeta, ExtractionEngine
-from ..config import settings
+from models import APBill, APBillLine, ExtractionMeta, ExtractionEngine, ValidationResult, ValidationStatus, Workflow, WorkflowStatus
+from config import settings
 
 
 class LayoutOCRExtractor:
@@ -143,8 +143,8 @@ class LayoutOCRExtractor:
             notes=None,
             lines=line_items,
             extraction_meta=extraction_meta,
-            validation=None,  # Will be set by validator
-            workflow=None  # Will be set by orchestrator
+            validation=ValidationResult(status=ValidationStatus.PASSED),
+            workflow=Workflow(status=WorkflowStatus.NEW)
         )
         
         return bill

@@ -9,15 +9,15 @@ from sqlalchemy.orm import Session
 import aiofiles
 from pathlib import Path
 
-from .models import (
+from models import (
     APBill, FileUpload, ExtractionRequest, BillUpdate, ExportRequest, 
     BillSummary, WorkflowStatus
 )
-from .database import get_session, create_db_and_tables
-from .config import settings
-from .engines import ExtractionOrchestrator
-from .validate import InvoiceValidator
-from .export_excel import ExcelExporter
+from database import get_session, create_db_and_tables
+from config import settings
+from engines import ExtractionOrchestrator
+from validate import InvoiceValidator
+from export_excel import ExcelExporter
 
 # Create FastAPI app
 app = FastAPI(

@@ -4,8 +4,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import List, Dict, Optional, Tuple
 from rapidfuzz import fuzz
-from ..models import APBill, ValidationResult, ValidationStatus, WorkflowHistory
-from ..config import settings
+from models import APBill, ValidationResult, ValidationStatus, WorkflowHistory
+from config import settings
 
 
 class InvoiceValidator:

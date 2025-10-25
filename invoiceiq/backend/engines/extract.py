@@ -1,7 +1,7 @@
 import asyncio
 from typing import Optional, List
-from ..models import APBill, ExtractionEngine
-from ..config import settings
+from models import APBill, ExtractionEngine
+from config import settings
 from .prebuilt_azure_di import AzureDIExtractor
 from .llm_openai import OpenAIVisionExtractor
 from .layout_rules import LayoutOCRExtractor

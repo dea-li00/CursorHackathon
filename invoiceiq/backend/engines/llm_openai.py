@@ -8,8 +8,8 @@ from openai import AsyncOpenAI
 from pdf2image import convert_from_path
 from PIL import Image
 import io
-from ..models import APBill, APBillLine, ExtractionMeta, ExtractionEngine
-from ..config import settings
+from models import APBill, APBillLine, ExtractionMeta, ExtractionEngine, ValidationResult, ValidationStatus, Workflow, WorkflowStatus
+from config import settings
 
 
 class OpenAIVisionExtractor:
@@ -220,8 +220,8 @@ class OpenAIVisionExtractor:
             notes=data.get("notes"),
             lines=lines,
             extraction_meta=extraction_meta,
-            validation=None,  # Will be set by validator
-            workflow=None  # Will be set by orchestrator
+            validation=ValidationResult(status=ValidationStatus.PASSED),
+            workflow=Workflow(status=WorkflowStatus.NEW)
         )
         
         return bill

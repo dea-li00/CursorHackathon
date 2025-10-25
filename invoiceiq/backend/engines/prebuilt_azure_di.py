@@ -5,8 +5,8 @@ from datetime import datetime, date
 import json
 from azure.ai.documentintelligence import DocumentIntelligenceClient
 from azure.core.credentials import AzureKeyCredential
-from ..models import APBill, APBillLine, ExtractionMeta, ExtractionEngine
-from ..config import settings
+from models import APBill, APBillLine, ExtractionMeta, ExtractionEngine, ValidationResult, ValidationStatus, Workflow, WorkflowStatus
+from config import settings
 
 
 class AzureDIExtractor:
@@ -96,8 +96,8 @@ class AzureDIExtractor:
             total=total or Decimal("0"),
             lines=lines,
             extraction_meta=extraction_meta,
-            validation=None,  # Will be set by validator
-            workflow=None  # Will be set by orchestrator
+            validation=ValidationResult(status=ValidationStatus.PASSED),
+            workflow=Workflow(status=WorkflowStatus.NEW)
         )
         
         return bill
