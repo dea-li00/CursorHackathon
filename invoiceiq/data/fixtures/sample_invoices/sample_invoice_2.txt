@@ -1,0 +1,31 @@
+INVOICE
+
+Tech Solutions Inc
+456 Tech Avenue
+San Francisco, CA 94105
+Tax ID: 98-7654321
+Email: info@techsolutions.com
+
+Invoice #: TECH-2024-002
+Date: 2024-01-20
+Due: 2024-02-20
+
+Client: ABC Company
+Address: 789 Client Street
+City, State 12345
+
+Item Description              Quantity    Price Each    Total
+Web Development Services       40 hours    $125.00      $5,000.00
+Database Setup                 1 project   $2,500.00    $2,500.00
+Maintenance Contract           12 months   $500.00      $6,000.00
+
+Subtotal:                                    $13,500.00
+Tax (8.5%):                                  $1,147.50
+Total Amount Due:                            $14,647.50
+
+Payment Instructions:
+Wire Transfer: US64SVBKUS6S3300958879
+Check payable to: Tech Solutions Inc
+
+Terms: Net 30 days
+Currency: USD

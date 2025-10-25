@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENGINE_PRIORITY=prebuilt,llm,layout
+      - AZURE_DI_ENDPOINT=${AZURE_DI_ENDPOINT:-}
+      - AZURE_DI_KEY=${AZURE_DI_KEY:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_MODEL=gpt-4o-mini
+      - TESSERACT_CMD=/usr/bin/tesseract
+      - SECRET_KEY=change-me-in-production
+      - CONF_THRESHOLD_HIGH=0.90
+      - CONF_THRESHOLD_LOW=0.75
+      - PORT=8000
+    volumes:
+      - ./backend:/app
+      - ./data:/app/data
+      - ./exports:/app/exports
+      - ./uploads:/app/uploads
+    depends_on:
+      - tesseract
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    command: npm run dev -- --host 0.0.0.0
+
+  tesseract:
+    image: tesseractshadow/tesseract4re
+    volumes:
+      - ./data:/data
+    command: tail -f /dev/null

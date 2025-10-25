@@ -1,0 +1,31 @@
+INVOICE
+
+Acme Corporation
+123 Business Street
+London, UK
+Tax ID: 12-3456789
+Email: contact@acme.com
+
+Invoice Number: INV-2024-001
+Invoice Date: 2024-01-15
+Due Date: 2024-02-15
+PO Number: PO-2024-001
+
+Bill To:
+Your Company Name
+Your Address
+Your City, State ZIP
+
+Description                    Qty    Unit Price    Amount
+Office Supplies Package        10     $150.00      $1,500.00
+Software License               5      $500.00      $2,500.00
+Consulting Services            20     $100.00      $2,000.00
+
+Subtotal:                                    $6,000.00
+Tax (10%):                                    $600.00
+Total:                                        $6,600.00
+
+Payment Terms: Net 30
+Currency: USD
+
+Thank you for your business!

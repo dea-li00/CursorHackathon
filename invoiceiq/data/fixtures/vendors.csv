@@ -1,0 +1,11 @@
+vendor_id,vendor_name,tax_id,iban,address,email,po_required
+V001,Acme Corporation,12-3456789,GB29NWBK60161331926819,123 Business St, London, UK,contact@acme.com,true
+V002,Tech Solutions Inc,98-7654321,US64SVBKUS6S3300958879,456 Tech Ave, San Francisco, CA,info@techsolutions.com,false
+V003,Global Supplies Ltd,55-1234567,DE89370400440532013000,789 Supply Rd, Berlin, Germany,sales@globalsupplies.de,true
+V004,Office Depot,33-9876543,FR1420041010050500013M02606,321 Office Blvd, Paris, France,orders@officedepot.fr,false
+V005,Software Partners,77-4567890,IT60X0542811101000000123456,654 Software St, Milan, Italy,partners@software.it,true
+V006,Marketing Agency,44-7890123,ES9121000418450200051332,987 Marketing Pl, Madrid, Spain,hello@marketing.es,false
+V007,Consulting Group,66-2345678,NL91ABNA0417164300,147 Consulting Ave, Amsterdam, Netherlands,info@consulting.nl,true
+V008,Print Services,88-3456789,BE68539007547034,258 Print St, Brussels, Belgium,print@services.be,false
+V009,Cloud Computing Co,99-4567890,CH9300762011623852957,369 Cloud Blvd, Zurich, Switzerland,cloud@computing.ch,true
+V010,Design Studio,11-5678901,AT611904300234573201,741 Design Rd, Vienna, Austria,studio@design.at,false

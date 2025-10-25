@@ -1,0 +1,11 @@
+po_number,vendor_id,sku,description,qty,unit_price,received_qty
+PO-2024-001,V001,ACME-001,Office Supplies Package,10,150.00,10
+PO-2024-002,V002,TECH-001,Software License,5,500.00,5
+PO-2024-003,V003,SUPPLY-001,Cleaning Supplies,20,25.00,18
+PO-2024-004,V004,OFFICE-001,Stationery Set,50,12.50,50
+PO-2024-005,V005,SOFT-001,Development Tools,3,1200.00,3
+PO-2024-006,V006,MARKET-001,Marketing Materials,100,8.75,95
+PO-2024-007,V007,CONSULT-001,Consulting Hours,40,150.00,40
+PO-2024-008,V008,PRINT-001,Printing Services,1000,0.15,1000
+PO-2024-009,V009,CLOUD-001,Cloud Storage,12,99.99,12
+PO-2024-010,V010,DESIGN-001,Design Services,1,2500.00,1
