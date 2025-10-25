@@ -21,22 +21,22 @@ const BillList: React.FC<BillListProps> = ({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'new':
-        return 'bg-gray-100 text-gray-800';
+        return 'status-pill--new';
       case 'needs_review':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'status-pill--review';
       case 'approved':
-        return 'bg-green-100 text-green-800';
+        return 'status-pill--approved';
       case 'exported':
-        return 'bg-blue-100 text-blue-800';
+        return 'status-pill--exported';
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'status-pill--new';
     }
   };
 
   const getConfidenceColor = (confidence: number) => {
-    if (confidence >= 0.9) return 'text-green-600';
-    if (confidence >= 0.75) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence >= 0.9) return 'confidence--high';
+    if (confidence >= 0.75) return 'confidence--medium';
+    return 'confidence--low';
   };
 
   const handleSelectAll = () => {
@@ -59,21 +59,50 @@ const BillList: React.FC<BillListProps> = ({
     onExport(selectedBills);
   };
 
+  const formatCurrency = (amount: number, currency: string) => {
+    try {
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency,
+        minimumFractionDigits: 2
+      }).format(amount);
+    } catch {
+      return `${currency} ${amount.toLocaleString()}`;
+    }
+  };
+
+  const getInitials = (vendorName: string) => {
+    const parts = vendorName.trim().split(/\s+/);
+    if (parts.length === 1) {
+      return parts[0]?.charAt(0).toUpperCase() ?? '?';
+    }
+    return `${parts[0]?.charAt(0) ?? ''}${parts[1]?.charAt(0) ?? ''}`.toUpperCase();
+  };
+
   return (
-    <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Invoices</h2>
-        <div className="flex space-x-2">
+    <div className="bill-list">
+      <div className="bill-list__header">
+        <div className="bill-list__header-copy">
+          <h2>Invoice Stream</h2>
+          <p>
+            {selectedBills.length > 0
+              ? `${selectedBills.length} selected of ${bills.length}`
+              : `${bills.length} invoices ready for review`}
+          </p>
+        </div>
+        <div className="bill-list__actions">
           <button
             onClick={handleSelectAll}
-            className="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded hover:bg-gray-200"
+            type="button"
+            className="btn btn--ghost"
           >
-            {selectedBills.length === bills.length ? 'Deselect All' : 'Select All'}
+            {selectedBills.length === bills.length && bills.length > 0 ? 'Deselect All' : 'Select All'}
           </button>
           {selectedBills.length > 0 && (
             <button
               onClick={handleExport}
-              className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+              type="button"
+              className="btn btn--success"
             >
               Export Selected ({selectedBills.length})
             </button>
@@ -81,66 +110,95 @@ const BillList: React.FC<BillListProps> = ({
         </div>
       </div>
 
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        <ul className="divide-y divide-gray-200">
-          {bills.map((bill) => (
-            <li key={bill.id} className="px-6 py-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <input
-                    type="checkbox"
-                    checked={selectedBills.includes(bill.id)}
-                    onChange={() => handleSelectBill(bill.id)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                  />
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => onBillSelect(bill.id)}
-                        className="text-sm font-medium text-blue-600 hover:text-blue-500 truncate"
-                      >
-                        {bill.vendor_name}
-                      </button>
-                      <span className="text-sm text-gray-500">#{bill.invoice_number}</span>
-                    </div>
-                    
-                    <div className="mt-1 flex items-center space-x-4 text-sm text-gray-500">
-                      <span>{new Date(bill.invoice_date).toLocaleDateString()}</span>
-                      <span className="font-medium">
-                        {bill.currency} {bill.total.toLocaleString()}
-                      </span>
-                      <span className={`font-medium ${getConfidenceColor(bill.confidence)}`}>
+      <div className="bill-list__table">
+        <div className="bill-list__head">
+          <span>Select</span>
+          <span>Vendor</span>
+          <span>Invoice</span>
+          <span>Issued</span>
+          <span>Total</span>
+          <span className="text-right">Status</span>
+        </div>
+
+        <ul>
+          {bills.map((bill) => {
+            const isSelected = selectedBills.includes(bill.id);
+            return (
+              <li
+                key={bill.id}
+                className={`bill-list__row ${isSelected ? 'bill-list__row--selected' : ''}`}
+              >
+                <div className="bill-list__cell bill-list__cell--checkbox">
+                  <label className="checkbox">
+                    <input
+                      type="checkbox"
+                      checked={isSelected}
+                      onChange={() => handleSelectBill(bill.id)}
+                    />
+                    <span />
+                  </label>
+                </div>
+
+                <div className="bill-list__cell bill-list__cell--vendor">
+                  <div className="avatar">{getInitials(bill.vendor_name)}</div>
+                  <div>
+                    <button
+                      onClick={() => onBillSelect(bill.id)}
+                      type="button"
+                      className="link"
+                    >
+                      {bill.vendor_name}
+                    </button>
+                    <div className="bill-list__meta">
+                      <span className="badge">{bill.engine}</span>
+                      <span className={`confidence ${getConfidenceColor(bill.confidence)}`}>
                         {Math.round(bill.confidence * 100)}% confidence
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center space-x-2">
-                  <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(bill.status)}`}>
+                <div className="bill-list__cell">
+                  <p className="bill-list__primary">#{bill.invoice_number}</p>
+                  <p className="bill-list__secondary">Created {new Date(bill.created_at).toLocaleDateString()}</p>
+                </div>
+
+                <div className="bill-list__cell">
+                  <p className="bill-list__primary">{new Date(bill.invoice_date).toLocaleDateString()}</p>
+                  <p className="bill-list__secondary">Invoice date</p>
+                </div>
+
+                <div className="bill-list__cell">
+                  <p className="bill-list__primary">{formatCurrency(bill.total, bill.currency)}</p>
+                  <p className="bill-list__secondary">{bill.currency} total</p>
+                </div>
+
+                <div className="bill-list__cell bill-list__cell--status">
+                  <span className={`status-pill ${getStatusColor(bill.status)}`}>
                     {bill.status.replace('_', ' ')}
                   </span>
-                  
                   {bill.status === 'needs_review' && (
                     <button
                       onClick={() => onApprove(bill.id)}
-                      className="px-3 py-1 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                      type="button"
+                      className="btn btn--outline"
                     >
                       Approve
                     </button>
                   )}
                 </div>
-              </div>
+              </li>
+            );
+          })}
+
+          {bills.length === 0 && (
+            <li className="bill-list__empty">
+              <div className="bill-list__empty-icon">+</div>
+              <p className="bill-list__empty-title">No invoices yet</p>
+              <p className="bill-list__empty-subtitle">Upload PDFs or images to kick off automated extraction.</p>
             </li>
-          ))}
+          )}
         </ul>
-        
-        {bills.length === 0 && (
-          <div className="px-6 py-12 text-center text-gray-500">
-            No invoices found. Upload some files to get started.
-          </div>
-        )}
       </div>
     </div>
   );

@@ -22,50 +22,50 @@ const FileUpload: React.FC<FileUploadProps> = ({ onFilesSelected, isUploading })
     disabled: isUploading
   });
 
+  const rootProps = getRootProps({
+    className: [
+      'file-upload',
+      isDragActive ? 'file-upload--active' : '',
+      isUploading ? 'file-upload--disabled' : ''
+    ].join(' ').trim()
+  });
+
   return (
     <div
-      {...getRootProps()}
-      className={`relative border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
-        isDragActive
-          ? 'border-blue-500 bg-blue-50'
-          : 'border-gray-300 hover:border-gray-400'
-      } ${isUploading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
+      {...rootProps}
+      aria-busy={isUploading}
+      data-state={isUploading ? 'uploading' : isDragActive ? 'drag-active' : 'idle'}
     >
       <input {...getInputProps()} />
-      
-      <div className="space-y-4">
-      <div className="mx-auto text-gray-400">
-        <svg
-          width="25"              // hard size (beats most CSS)
-          height="25"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          className="inline-block align-middle shrink-0" // prevents flex growth/line-height weirdness
-          aria-hidden="true"
-        >
-          <path
+      <div className="file-upload__content">
+        <div className="file-upload__icon">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={1.6}
             strokeLinecap="round"
             strokeLinejoin="round"
-            strokeWidth={1.5}     // thinner at small size
-            d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
-          />
-        </svg>
-      </div>
+          >
+            <path d="M12 16V4" />
+            <path d="m8 12 4 4 4-4" />
+            <rect width="20" height="12" x="2" y="8" rx="2" ry="2" />
+          </svg>
+        </div>
 
-
-        
         <div>
-          <p className="text-lg font-medium text-gray-900">
-            {isUploading ? 'Uploading...' : 'Upload Invoice Files'}
+          <p className="file-upload__title">
+            {isUploading ? 'Uploading…' : 'Upload invoice files'}
           </p>
-          <p className="text-sm text-gray-500">
-            Drag and drop PDF or image files here, or click to select
+          <p className="file-upload__subtitle">
+            Drag & drop PDF or image files, or click to browse from your machine.
           </p>
         </div>
-        
-        <div className="text-xs text-gray-400">
-          Supports: PDF, PNG, JPG, JPEG
+
+        <div className="file-upload__legend">
+          Supports PDF, PNG, JPG, JPEG
         </div>
       </div>
     </div>
