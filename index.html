@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InvoiceIQ - AI Invoice to Excel AP Bills | Free & Open Source</title>
+    <meta name="description" content="Transform invoices into clean AP bills in Excel. AI-powered extraction for SMEs & NGOs. Free, open source, no vendor lock-in.">
+    <meta name="canonical" content="https://invoiceiq.github.io">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://invoiceiq.github.io">
+    <meta property="og:title" content="InvoiceIQ - AI Invoice to Excel AP Bills">
+    <meta property="og:description" content="Transform invoices into clean AP bills in Excel. AI-powered extraction for SMEs & NGOs.">
+    <meta property="og:image" content="https://invoiceiq.github.io/assets/og-image.png">
+    
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://invoiceiq.github.io">
+    <meta property="twitter:title" content="InvoiceIQ - AI Invoice to Excel AP Bills">
+    <meta property="twitter:description" content="Transform invoices into clean AP bills in Excel. AI-powered extraction for SMEs & NGOs.">
+    <meta property="twitter:image" content="https://invoiceiq.github.io/assets/og-image.png">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "InvoiceIQ",
+        "description": "AI-powered invoice processing tool that extracts data from PDFs and images to create clean AP bills in Excel format",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "url": "https://invoiceiq.github.io",
+        "sameAs": "https://github.com/invoiceiq"
+    }
+    </script>
+</head>
+<body>
+    <!-- Skip to content link for accessibility -->
+    <a href="#main" class="skip-link">Skip to main content</a>
+    
+    <!-- Header / Navigation -->
+    <header class="header" id="header">
+        <nav class="nav container">
+            <div class="nav-brand">
+                <img src="assets/logo.svg" alt="InvoiceIQ" class="logo">
+                <span class="brand-text">InvoiceIQ</span>
+            </div>
+            
+            <div class="nav-menu" id="nav-menu">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#home" class="nav-link toc-link" data-section="home">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#problem" class="nav-link toc-link" data-section="problem">Problem</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#solution" class="nav-link toc-link" data-section="solution">Solution</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#how-it-works" class="nav-link toc-link" data-section="how-it-works">How it Works</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#demo" class="nav-link toc-link" data-section="demo">Demo</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#faq" class="nav-link toc-link" data-section="faq">FAQ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#privacy" class="nav-link toc-link" data-section="privacy">Privacy</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link toc-link" data-section="contact">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-actions">
+                <a href="https://github.com/invoiceiq/invoiceiq" class="btn btn-primary" target="_blank" rel="noopener">Try the App</a>
+                <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                    <span class="hamburger"></span>
+                </button>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Main Content -->
+    <main id="main">
+        <!-- Hero Section -->
+        <section id="home" class="hero section">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h1 class="hero-title">Scan invoices. Get clean AP bills in Excel.</h1>
+                        <p class="hero-subtitle">For SMEs & NGOs: Upload PDFs or images and export validated AP bills to Excel—no manual typing.</p>
+                        
+                        <div class="hero-badges">
+                            <span class="badge">Free & Open Source</span>
+                            <span class="badge">No Vendor Lock-In</span>
+                        </div>
+                        
+                        <div class="hero-actions">
+                            <a href="https://github.com/invoiceiq/invoiceiq" class="btn btn-primary btn-large" target="_blank" rel="noopener">Try the App</a>
+                            <a href="https://github.com/invoiceiq/invoiceiq" class="btn btn-secondary btn-large" target="_blank" rel="noopener">GitHub Repo</a>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-image">
+                        <img src="assets/hero.png" alt="InvoiceIQ interface showing invoice processing workflow" class="hero-img" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Problem Section -->
+        <section id="problem" class="section">
+            <div class="container">
+                <h2 class="section-title">The Problem</h2>
+                <div class="problem-grid">
+                    <div class="problem-item">
+                        <div class="problem-icon">📝</div>
+                        <h3>Manual Data Entry</h3>
+                        <p>Hours spent typing invoice data into spreadsheets, prone to human error and time-consuming.</p>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">❌</div>
+                        <h3>Data Errors</h3>
+                        <p>Typos, missing information, and inconsistent formatting lead to accounting discrepancies.</p>
+                    </div>
+                    <div class="problem-item">
+                        <div class="problem-icon">⏰</div>
+                        <h3>Slow Month-End</h3>
+                        <p>Delayed financial reporting due to manual invoice processing bottlenecks.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Solution Section -->
+        <section id="solution" class="section bg-alt">
+            <div class="container">
+                <h2 class="section-title">The Solution</h2>
+                <div class="solution-grid">
+                    <div class="solution-card">
+                        <div class="card-icon">🤖</div>
+                        <h3>AI Extraction</h3>
+                        <p>Upload PDFs or images and let AI extract invoice data automatically with high accuracy.</p>
+                    </div>
+                    <div class="solution-card">
+                        <div class="card-icon">✅</div>
+                        <h3>Validation & Duplicates</h3>
+                        <p>Smart validation checks and duplicate detection ensure data integrity and accuracy.</p>
+                    </div>
+                    <div class="solution-card">
+                        <div class="card-icon">👀</div>
+                        <h3>Review & Approve</h3>
+                        <p>Easy review interface to verify extracted data before final processing.</p>
+                    </div>
+                    <div class="solution-card">
+                        <div class="card-icon">📊</div>
+                        <h3>Export to Excel</h3>
+                        <p>Generate clean, formatted AP bills in Excel with proper categorization and totals.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- How it Works Section -->
+        <section id="how-it-works" class="section">
+            <div class="container">
+                <h2 class="section-title">How it Works</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-icon">📤</div>
+                        <h3>1. Upload</h3>
+                        <p>Upload your invoice PDFs or images through our simple interface.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon">🔍</div>
+                        <h3>2. Extract</h3>
+                        <p>Our hybrid AI engine processes documents using prebuilt models, Vision LLM fallback, and OCR rules.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon">✏️</div>
+                        <h3>3. Review</h3>
+                        <p>Review and edit extracted data to ensure accuracy before final processing.</p>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-icon">📋</div>
+                        <h3>4. Export</h3>
+                        <p>Download your clean AP bills in Excel format, ready for accounting systems.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Demo Section -->
+        <section id="demo" class="section bg-alt">
+            <div class="container">
+                <h2 class="section-title">See it in Action</h2>
+                <div class="demo-content">
+                    <div class="demo-video">
+                        <iframe 
+                            src="https://www.youtube.com/embed/dQw4w9WgXcQ" 
+                            title="InvoiceIQ Demo Video" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen
+                            loading="lazy">
+                        </iframe>
+                    </div>
+                    <div class="demo-actions">
+                        <a href="assets/sample-AP_Bills.xlsx" class="btn btn-primary" download>Download Sample Excel</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- FAQ Section -->
+        <section id="faq" class="section">
+            <div class="container">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <h3 class="faq-question">How accurate is the AI extraction?</h3>
+                        <p class="faq-answer">Our hybrid AI engine achieves 95%+ accuracy on standard invoice formats. The system uses multiple extraction methods and always allows manual review and correction.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">Is my data private and secure?</h3>
+                        <p class="faq-answer">Yes! InvoiceIQ is designed with privacy-first principles. All processing happens locally in your browser, and no data is sent to external servers unless you explicitly choose to.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">What does it cost?</h3>
+                        <p class="faq-answer">InvoiceIQ is completely free and open source. No hidden costs, no subscription fees, and no vendor lock-in. You own your data and your workflow.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">What Excel format does it export?</h3>
+                        <p class="faq-answer">We export to standard Excel (.xlsx) format with proper AP bill structure including vendor details, line items, totals, and categorization columns.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">What file types are supported?</h3>
+                        <p class="faq-answer">We support PDF invoices and common image formats (JPG, PNG, TIFF). The system works best with clear, high-resolution documents.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">Does it work in multiple languages?</h3>
+                        <p class="faq-answer">Yes! Our AI engine supports invoices in multiple languages including English, Spanish, French, German, and more. Language detection is automatic.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">Can I integrate it with my accounting system?</h3>
+                        <p class="faq-answer">The exported Excel files are designed to be easily imported into most accounting systems. We're also working on direct integrations with popular accounting platforms.</p>
+                    </div>
+                    <div class="faq-item">
+                        <h3 class="faq-question">What if the AI makes a mistake?</h3>
+                        <p class="faq-answer">Every extraction includes a review step where you can correct any errors before export. The system learns from your corrections to improve future accuracy.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Privacy Section -->
+        <section id="privacy" class="section bg-alt">
+            <div class="container">
+                <h2 class="section-title">Privacy & Data Security</h2>
+                <div class="privacy-content">
+                    <p>InvoiceIQ is built with privacy-first principles. Here's how we protect your data:</p>
+                    <ul class="privacy-list">
+                        <li><strong>Local Processing:</strong> All AI processing happens locally in your browser. No data is sent to external servers.</li>
+                        <li><strong>No Analytics:</strong> We don't track your usage or collect analytics by default. Your workflow remains completely private.</li>
+                        <li><strong>Optional Contact:</strong> If you choose to contact us, we use Formspree for form handling with industry-standard security.</li>
+                        <li><strong>Open Source:</strong> All code is open source, so you can verify exactly how your data is handled.</li>
+                    </ul>
+                    <p>For detailed privacy information, see our <a href="https://github.com/invoiceiq/invoiceiq/blob/main/PRIVACY.md" target="_blank" rel="noopener">privacy documentation</a>.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="section-title">Get in Touch</h2>
+                <div class="contact-content">
+                    <div class="contact-info">
+                        <h3>Have questions or feedback?</h3>
+                        <p>We'd love to hear from you! Whether you have questions about InvoiceIQ, need help getting started, or want to suggest improvements, we're here to help.</p>
+                    </div>
+                    
+                    <form class="contact-form" id="contact-form">
+                        <div class="form-group">
+                            <label for="name" class="form-label">Name *</label>
+                            <input type="text" id="name" name="name" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email" class="form-label">Email *</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="message" class="form-label">Message *</label>
+                            <textarea id="message" name="message" class="form-textarea" rows="5" required></textarea>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary btn-large">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <img src="assets/logo.svg" alt="InvoiceIQ" class="footer-logo">
+                    <span class="footer-text">InvoiceIQ</span>
+                </div>
+                
+                <div class="footer-links">
+                    <a href="https://github.com/invoiceiq/invoiceiq" target="_blank" rel="noopener">GitHub</a>
+                    <a href="LICENSE" target="_blank" rel="noopener">License</a>
+                    <a href="https://github.com/invoiceiq/invoiceiq/issues" target="_blank" rel="noopener">Report an Issue</a>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; <span id="current-year"></span> InvoiceIQ. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+    
+    <!-- Scripts -->
+    <script src="script.js"></script>
+</body>
+</html>
